@@ -1,8 +1,9 @@
-FROM n8nio/n8n:latest
+FROM node:20-bullseye
 
-USER root
+# Install n8n globally
+RUN npm install -g n8n
 
-# Install dependencies required by Chromium
+# Install system dependencies required by Chromium
 RUN apt-get update && apt-get install -y \
     wget \
     ca-certificates \
@@ -34,4 +35,8 @@ RUN apt-get update && apt-get install -y \
 RUN npm install playwright
 RUN npx playwright install chromium
 
-USER node
+# Expose n8n port
+EXPOSE 5678
+
+# Start n8n
+CMD ["n8n"]
