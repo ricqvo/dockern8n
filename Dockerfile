@@ -1,9 +1,18 @@
 FROM node:20-bullseye
 
-# Install n8n globally
-RUN npm install -g n8n
+# Create app directory
+WORKDIR /app
 
-# Install system dependencies required by Chromium
+# Initialize project
+RUN npm init -y
+
+# Install n8n + playwright locally
+RUN npm install n8n playwright
+
+# Install Chromium
+RUN npx playwright install chromium
+
+# Install system dependencies for Chromium
 RUN apt-get update && apt-get install -y \
     wget \
     ca-certificates \
@@ -31,12 +40,8 @@ RUN apt-get update && apt-get install -y \
     libxss1 \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Playwright
-RUN npm install playwright
-RUN npx playwright install chromium
-
-# Expose n8n port
+# Expose port
 EXPOSE 5678
 
 # Start n8n
-CMD ["n8n"]
+CMD ["npx", "n8n"]
